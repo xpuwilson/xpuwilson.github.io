@@ -189,7 +189,7 @@ body {
   font-size: 14px;
   line-height: 2;
   color: #555;
-  background: #eee;
+  background: url '/images/avatar.jpg';
 }
 @media (max-width: 767px) {
   body {
@@ -1913,7 +1913,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #fff;
+  background: #d4ffac;
 }
 .links-of-blogroll {
   font-size: 13px;
