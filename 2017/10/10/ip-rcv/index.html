@@ -94,18 +94,18 @@
 
 
 
-<meta name="description" content="所有源码来自kernel.org内核版本号3.10  所在目录/include/linux/in.h &amp;#123;.line-numbers&amp;#125;123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566">
+<meta name="description" content="所有源码来自kernel.org内核版本号3.10  &amp;#123;.line-numbers&amp;#125;123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778">
 <meta name="keywords" content="内核网络,kernel">
 <meta property="og:type" content="article">
-<meta property="og:title" content="保留地址及检测方法">
-<meta property="og:url" content="https://xpuwilson.github.io/2017/09/30/保留地址及检测方法/index.html">
+<meta property="og:title" content="ip_rcv()处理sk_buff数据分析">
+<meta property="og:url" content="https://xpuwilson.github.io/2017/10/10/ip-rcv/index.html">
 <meta property="og:site_name" content="Wilson&#39;s Notes | Big Heart">
-<meta property="og:description" content="所有源码来自kernel.org内核版本号3.10  所在目录/include/linux/in.h &amp;#123;.line-numbers&amp;#125;123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566">
+<meta property="og:description" content="所有源码来自kernel.org内核版本号3.10  &amp;#123;.line-numbers&amp;#125;123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-09-30T11:21:04.573Z">
+<meta property="og:updated_time" content="2017-10-10T13:42:59.840Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="保留地址及检测方法">
-<meta name="twitter:description" content="所有源码来自kernel.org内核版本号3.10  所在目录/include/linux/in.h &amp;#123;.line-numbers&amp;#125;123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566">
+<meta name="twitter:title" content="ip_rcv()处理sk_buff数据分析">
+<meta name="twitter:description" content="所有源码来自kernel.org内核版本号3.10  &amp;#123;.line-numbers&amp;#125;123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778">
 
 
 
@@ -134,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="https://xpuwilson.github.io/2017/09/30/保留地址及检测方法/"/>
+  <link rel="canonical" href="https://xpuwilson.github.io/2017/10/10/ip-rcv/"/>
 
 
 
 
 
-  <title>保留地址及检测方法 | Wilson's Notes | Big Heart</title>
+  <title>ip_rcv()处理sk_buff数据分析 | Wilson's Notes | Big Heart</title>
   
 
 
@@ -293,7 +293,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://xpuwilson.github.io/2017/09/30/保留地址及检测方法/">
+    <link itemprop="mainEntityOfPage" href="https://xpuwilson.github.io/2017/10/10/ip-rcv/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Wilson Wang">
@@ -310,7 +310,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">保留地址及检测方法</h1>
+          <h1 class="post-title" itemprop="name headline">ip_rcv()处理sk_buff数据分析</h1>
         
 
         <div class="post-meta">
@@ -322,8 +322,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-30T19:19:17+08:00">
-                2017-09-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-10T21:39:57+08:00">
+                2017-10-10
               </time>
             
 
@@ -341,9 +341,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/09/30/保留地址及检测方法/#comments" itemprop="discussionUrl">
+                <a href="/2017/10/10/ip-rcv/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/09/30/保留地址及检测方法/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2017/10/10/ip-rcv/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/2017/09/30/保留地址及检测方法/" class="leancloud_visitors" data-flag-title="保留地址及检测方法">
+             <span id="/2017/10/10/ip-rcv/" class="leancloud_visitors" data-flag-title="ip_rcv()处理sk_buff数据分析">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -385,8 +385,17 @@
         <blockquote>
 <p>所有源码来自<a href="https://www.kernel.org" target="_blank" rel="external">kernel.org</a><br>内核版本号3.10</p>
 </blockquote>
-<p>所在目录/include/linux/in.h</p>
-<figure class="highlight c"><figcaption><span>&#123;.line-numbers&#125;</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// - 0111 1111|xxxx xxxx|xxxx xxxx|xxxx xxxx - loopback地址</span></div><div class="line"><span class="comment">// - 127.x.x.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_loopback</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xff000000</span>)) == htonl(<span class="number">0x7f000000</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// - 1110 xxxx|xxxx xxxx|xxxx xxxx|xxxx xxxx 多播地址</span></div><div class="line"><span class="comment">// - 224.x.x.x - 239.x.x.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_multicast</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xf0000000</span>)) == htonl(<span class="number">0xe0000000</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// - 1110 0000|0000 0000|0000 0000|xxxx xxxx 本地多播</span></div><div class="line"><span class="comment">// - 224.0.0.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_local_multicast</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xffffff00</span>)) == htonl(<span class="number">0xe0000000</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// - 255.255.255.255 本地广播</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_lbcast</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="comment">/* limited broadcast */</span></div><div class="line">	<span class="keyword">return</span> addr == htonl(INADDR_BROADCAST);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// - 0000 0000|xxxx xxxx|xxxx xxxx|xxxx xxxx - zeronet</span></div><div class="line"><span class="comment">// - 0.x.x.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_zeronet</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xff000000</span>)) == htonl(<span class="number">0x00000000</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* Special-Use IPv4 Addresses (RFC3330) */</span></div><div class="line"></div><div class="line"><span class="comment">// - 0000 1010|xxxx xxxx|xxxx xxxx|xxxx xxxx - private_10</span></div><div class="line"><span class="comment">// - 10.x.x.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_private_10</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xff000000</span>)) == htonl(<span class="number">0x0a000000</span>); <span class="comment">// - 10.x.x.x</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// - 1010 1100|0001 xxxx|xxxx xxxx|xxxx xxxx - private_172</span></div><div class="line"><span class="comment">// - 172.16.x.x - 172.31.x.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_private_172</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xfff00000</span>)) == htonl(<span class="number">0xac100000</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// - 1100 0000|1010 1000|xxxx xxxx|xxxx xxxx - private_192</span></div><div class="line"><span class="comment">// - 192.168.x.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_private_192</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xffff0000</span>)) == htonl(<span class="number">0xc0a80000</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// - 1010 1001|1111 1110|xxxx xxxx|xxxx xxxx</span></div><div class="line"><span class="comment">// - 169.254.x.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_linklocal_169</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xffff0000</span>)) == htonl(<span class="number">0xa9fe0000</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// - 1100 0000|0101 1000|0110 0011|xxxx xxxx</span></div><div class="line"><span class="comment">// - 192.88.99.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_anycast_6to4</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xffffff00</span>)) == htonl(<span class="number">0xc0586300</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// - 1100 0000|0000 0000|0000 0010|xxxx xxxx</span></div><div class="line"><span class="comment">// - 192.0.2.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_test_192</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xffffff00</span>)) == htonl(<span class="number">0xc0000200</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// - 1100 0110|0001 001x|xxxx xxxx|xxxx xxxx</span></div><div class="line"><span class="comment">// - 198.18.x.x - 198.19.x.x</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">ipv4_is_test_198</span><span class="params">(__be32 addr)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">return</span> (addr &amp; htonl(<span class="number">0xfffe0000</span>)) == htonl(<span class="number">0xc6120000</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight c"><figcaption><span>&#123;.line-numbers&#125;</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"><span class="comment"> * 	Main IP Receive routine.</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">ip_rcv</span><span class="params">(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt, struct net_device *orig_dev)</span></span></div><div class="line"><span class="function"></span>&#123;</div><div class="line">	<span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">iphdr</span> *<span class="title">iph</span>;</span></div><div class="line">	u32 len;</div><div class="line"></div><div class="line">	<span class="comment">/* When the interface is in promisc. mode, drop all the crap</span></div><div class="line"><span class="comment">	 * that it receives, do not try to analyse it.</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="keyword">if</span> (skb-&gt;pkt_type == PACKET_OTHERHOST) <span class="comment">//该值在方法eth_type_trans()中确定，判断依据目标MAC地址</span></div><div class="line">		<span class="keyword">goto</span> drop;</div><div class="line"></div><div class="line"></div><div class="line">	IP_UPD_PO_STATS_BH(dev_net(dev), IPSTATS_MIB_IN, skb-&gt;len);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> ((skb = skb_share_check(skb, GFP_ATOMIC)) == <span class="literal">NULL</span>) &#123;</div><div class="line">		IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_INDISCARDS);</div><div class="line">		<span class="keyword">goto</span> out;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (!pskb_may_pull(skb, <span class="keyword">sizeof</span>(struct iphdr)))</div><div class="line">		<span class="keyword">goto</span> inhdr_error;</div><div class="line"></div><div class="line">	iph = ip_hdr(skb);</div><div class="line"></div><div class="line">	<span class="comment">/*</span></div><div class="line"><span class="comment">	 *	RFC1122: 3.2.1.2 MUST silently discard any IP frame that fails the checksum.</span></div><div class="line"><span class="comment">	 *</span></div><div class="line"><span class="comment">	 *	Is the datagram acceptable?</span></div><div class="line"><span class="comment">	 *</span></div><div class="line"><span class="comment">	 *	1.	Length at least the size of an ip header</span></div><div class="line"><span class="comment">	 *	2.	Version of 4</span></div><div class="line"><span class="comment">	 *	3.	Checksums correctly. [Speed optimisation for later, skip loopback checksums]</span></div><div class="line"><span class="comment">	 *	4.	Doesn't have a bogus length</span></div><div class="line"><span class="comment">	 */</span></div><div class="line"></div><div class="line">	<span class="keyword">if</span> (iph-&gt;ihl &lt; <span class="number">5</span> || iph-&gt;version != <span class="number">4</span>)</div><div class="line">		<span class="keyword">goto</span> inhdr_error;</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (!pskb_may_pull(skb, iph-&gt;ihl*<span class="number">4</span>))</div><div class="line">		<span class="keyword">goto</span> inhdr_error;</div><div class="line"></div><div class="line">	iph = ip_hdr(skb);</div><div class="line"></div><div class="line">	<span class="keyword">if</span> (unlikely(ip_fast_csum((u8 *)iph, iph-&gt;ihl)))</div><div class="line">		<span class="keyword">goto</span> csum_error;</div><div class="line"></div><div class="line">	len = ntohs(iph-&gt;tot_len);</div><div class="line">	<span class="keyword">if</span> (skb-&gt;len &lt; len) &#123;</div><div class="line">		IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_INTRUNCATEDPKTS);</div><div class="line">		<span class="keyword">goto</span> drop;</div><div class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (len &lt; (iph-&gt;ihl*<span class="number">4</span>))</div><div class="line">		<span class="keyword">goto</span> inhdr_error;</div><div class="line"></div><div class="line">	<span class="comment">/* Our transport medium may have padded the buffer out. Now we know it</span></div><div class="line"><span class="comment">	 * is IP we can trim to the true length of the frame.</span></div><div class="line"><span class="comment">	 * Note this now means skb-&gt;len holds ntohs(iph-&gt;tot_len).</span></div><div class="line"><span class="comment">	 */</span></div><div class="line">	<span class="keyword">if</span> (pskb_trim_rcsum(skb, len)) &#123;</div><div class="line">		IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_INDISCARDS);</div><div class="line">		<span class="keyword">goto</span> drop;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">/* Remove any debris废墟 in the socket control block */</span></div><div class="line">	<span class="built_in">memset</span>(IPCB(skb), <span class="number">0</span>, <span class="keyword">sizeof</span>(struct inet_skb_parm));</div><div class="line"></div><div class="line">	<span class="comment">/* Must drop socket now because of tproxy. */</span></div><div class="line">	skb_orphan(skb);</div><div class="line"></div><div class="line">	<span class="keyword">return</span> NF_HOOK(NFPROTO_IPV4, NF_INET_PRE_ROUTING, skb, dev, <span class="literal">NULL</span>,</div><div class="line">		       ip_rcv_finish);		<span class="comment">//钩子函数ipv4_conntrack_in</span></div><div class="line"></div><div class="line">csum_error:</div><div class="line">	IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_CSUMERRORS);</div><div class="line">inhdr_error:</div><div class="line">	IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_INHDRERRORS);</div><div class="line">drop:</div><div class="line">	kfree_skb(skb);</div><div class="line">out:</div><div class="line">	<span class="keyword">return</span> NET_RX_DROP;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">/*************************************</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * (sk_buff)-&gt;pkt_type;</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> *************************************/</span></div><div class="line"><span class="comment">/* Packet types */</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PACKET_HOST		0		<span class="comment">/* To us		*/</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PACKET_BROADCAST	1		<span class="comment">/* To all		*/</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PACKET_MULTICAST	2		<span class="comment">/* To group		*/</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PACKET_OTHERHOST	3		<span class="comment">/* To someone else 	*/</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PACKET_OUTGOING		4		<span class="comment">/* Outgoing of any type */</span></span></div><div class="line"><span class="comment">/* These ones are invisible by user level */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PACKET_LOOPBACK		5		<span class="comment">/* MC/BRD frame looped back */</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> PACKET_FASTROUTE	6		<span class="comment">/* Fastrouted frame	*/</span></span></div></pre></td></tr></table></figure>
+<ul>
+<li>检查skb-&gt;pkt_type;</li>
+<li>获取ip header</li>
+<li>校验和计算</li>
+<li>获取ip报文的总长度（包括header在内）</li>
+<li>重新计算校验和</li>
+<li>清空(sk_buff)-&gt;cb控制缓冲区</li>
+<li>设置（destructor = NULL; sk = NULL;）</li>
+<li>调用ip_rcv_finish()，进行下一步处理</li>
+</ul>
 
       
     </div>
@@ -420,8 +429,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/29/fib-table-lookup路由查表过程分析/" rel="next" title="fib_table_lookup路由查表过程分析 - Linux-3.10">
-                <i class="fa fa-chevron-left"></i> fib_table_lookup路由查表过程分析 - Linux-3.10
+              <a href="/2017/10/09/IPv4路由子选择系统/" rel="next" title="IPv4路由子选择系统">
+                <i class="fa fa-chevron-left"></i> IPv4路由子选择系统
               </a>
             
           </div>
@@ -430,8 +439,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/09/IPv4路由子选择系统/" rel="prev" title="IPv4路由子选择系统">
-                IPv4路由子选择系统 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/10/10/ip-rcv-finish/" rel="prev" title="ip_rcv_finish()处理sk_buff数据分析">
+                ip_rcv_finish()处理sk_buff数据分析 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -740,9 +749,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://xpuwilson.github.io/2017/09/30/保留地址及检测方法/';
-          this.page.identifier = '2017/09/30/保留地址及检测方法/';
-          this.page.title = '保留地址及检测方法';
+          this.page.url = 'https://xpuwilson.github.io/2017/10/10/ip-rcv/';
+          this.page.identifier = '2017/10/10/ip-rcv/';
+          this.page.title = 'ip_rcv()处理sk_buff数据分析';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://Wilson.disqus.com/embed.js';
